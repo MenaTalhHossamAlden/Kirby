@@ -2,6 +2,7 @@ import { appWindow } from '@tauri-apps/api/window';
 import kaplay from 'kaplay';
 import { makeBackground } from './utils';
 import { SCALE_FACTOR } from './constants';
+import { makePlayer } from './player';
 
 const k = kaplay({
   width: 1280,
@@ -48,6 +49,8 @@ k.scene('start', async () => {
     }
   });
   map.add([k.sprite('obstacles'), k.pos()]);
+  const player = k.add(makePlayer(k));
+  player.pos = k.vec2(k.center().x - 350, k.center().y + 56);
 });
 
 k.scene('main', async () => {});
