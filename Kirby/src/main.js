@@ -39,6 +39,14 @@ k.scene('start', async () => {
     k.pos(0, 0),
     k.scale(SCALE_FACTOR),
   ]);
+  const clouds = map.add([k.sprite('clouds'), k.pos(), { speed: 50 }]);
+  clouds.onUpdate(() => {
+    clouds.move(clouds.speed, 0);
+    console.log(clouds.pos.x);
+    if (clouds.pos.x > 700) {
+      clouds.pos.x = -500;
+    }
+  });
 });
 
 k.scene('main', async () => {});
