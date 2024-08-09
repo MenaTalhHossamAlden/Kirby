@@ -1,3 +1,4 @@
+import { appWindow } from '@tauri-apps/api/window';
 import kaplay from 'kaplay';
 
 const k = kaplay({
@@ -17,3 +18,14 @@ k.loadSound('jump', './jump.wav');
 k.loadSound('hurt', './hurt.wav');
 k.loadSound('confirm', './confirm.wav');
 
+// appwindow is ab object from Tauri JS API that allows you 
+// to access the main window and interact/manipulates it
+addEventListener('keydown', async (key) => {
+  if (key.code === 'F11') {
+    if (await appWindow.isFullscreen()) {
+      await appWindow.setFullscreen(false);
+      return;
+    }
+    appWindow.setFullscreen(true);
+  }
+});
