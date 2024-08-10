@@ -3,7 +3,7 @@ import kaplay from 'kaplay';
 import { makeBackground } from './utils';
 import { SCALE_FACTOR } from './constants';
 import { makePlayer } from './player';
-
+import { saveSystem } from './save';
 const k = kaplay({
   width: 1280,
   height: 720,
@@ -69,8 +69,17 @@ k.scene('start', async () => {
     k.go('main');
   };
   playBtn.onClick(goToGame);
+  k.onKeyPress('space', goToGame);
+  k.onGamepadButtonPress('south', goToGame);
+  await saveSystem.load();
+  if(!saveSystem.data.maxScore) {
+    saveSystem.data.maxScore = 0
+    await saveSystem.save();
+  }
 });
 
-k.scene('main', async () => {});
+k.scene('main', async () => {
+  
+});
 
 k.go('start');
