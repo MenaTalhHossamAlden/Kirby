@@ -1,9 +1,10 @@
 import { appWindow } from '@tauri-apps/api/window';
 import kaplay from 'kaplay';
-import { makeBackground } from './utils';
+import { makeBackground, goToGame } from './utils';
 import { SCALE_FACTOR } from './constants';
 import { makePlayer } from './player';
 import { saveSystem } from './save';
+import { makeScoreBox } from './score';
 const k = kaplay({
   width: 1280,
   height: 720,
@@ -43,7 +44,6 @@ k.scene('start', async () => {
   const clouds = map.add([k.sprite('clouds'), k.pos(), { speed: 5 }]);
   clouds.onUpdate(() => {
     clouds.move(clouds.speed, 0);
-    console.log(clouds.pos.x);
     if (clouds.pos.x > 700) {
       clouds.pos.x = -500;
     }
@@ -64,18 +64,14 @@ k.scene('start', async () => {
     k.color(k.Color.fromHex('#d7f2f7')),
     k.anchor('center'),
   ]);
-  const goToGame = () => {
-    k.play('confirm');
-    k.go('main');
-  };
-  playBtn.onClick(goToGame);
-  k.onKeyPress('space', goToGame);
-  k.onGamepadButtonPress('south', goToGame);
+  playBtn.onClick(() => goToGame(k));
+  k.onKeyPress('space', () => goToGame(k));
+  k.onGamepadButtonPress('south', () => goToGame(k));
   await saveSystem.load();
   if (!saveSystem.data.maxScore) {
     saveSystem.data.maxScore = 0;
-    await saveSystem.save();
-  }
+    // await saveSystem.save();
+  } 
 });
 
 k.scene('main', async () => {
@@ -92,7 +88,6 @@ k.scene('main', async () => {
   const clouds = map.add([k.sprite('clouds'), k.pos(), { speed: 5 }]);
   clouds.onUpdate(() => {
     clouds.move(clouds.speed, 0);
-    console.log(clouds.pos.x);
     if (clouds.pos.x > 700) {
       clouds.pos.x = -500; // put the clouds far back so it scrolls again
     }
@@ -128,7 +123,7 @@ k.scene('main', async () => {
   const player = k.add(makePlayer(k));
   player.pos = k.vec2(500, 250);
   player.setControls();
-  player.onCollide('obstacles', () => {
+  player.onCollide('obstacles', async () => {
     if (player.isDead) {
       return;
     }
@@ -137,6 +132,7 @@ k.scene('main', async () => {
     player.disableControls();
     // Create ScoreBox
     player.isDead = true;
+    k.add(await makeScoreBox(k, k.center(), score));
   });
 });
 

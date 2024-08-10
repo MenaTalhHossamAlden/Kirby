@@ -1,4 +1,4 @@
-import { BaseDirectory, writeTextFile } from '@tauri-apps/api/fs';
+import { BaseDirectory, writeTextFile, readTextFile } from '@tauri-apps/api/fs';
 
 export function makeSaveSystem(saveFileName) {
   return {
@@ -9,11 +9,12 @@ export function makeSaveSystem(saveFileName) {
       });
     },
     async load() {
+      console.log('loading');
       try {
         this.data = JSON.parse(
           await readTextFile(saveFileName, { dir: BaseDirectory.AppLocalData })
         );
-      } catch {
+      } catch (err) {
         this.data = {};
       }
     },
