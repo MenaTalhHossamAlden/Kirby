@@ -36,6 +36,7 @@
       "csp": null
     },
     "bundle": {
+      "shortDescription": "A desktop game made in JavaScript and Tauri",
       "active": true,
       "targets": "all",
       "identifier": "kirby.game",
